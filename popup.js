@@ -44,26 +44,41 @@ function sanitizeTitle(raw) {
 // Ta funkcja jest wstrzykiwana do karty Jiry (działa w kontekście strony, nie popupu),
 // więc nie może korzystać z żadnych zmiennych z popup.js - musi być samodzielna.
 function extractJiraIssueData() {
-  // Klasyczny interfejs Jira Server / Data Center
-  let issueKey = document.querySelector('#key-val')?.textContent?.trim();
-  let summary = document.querySelector('#summary-val')?.textContent?.trim();
+  // Zwraca treść pierwszego elementu znalezionego po jednym z podanych selektorów
+  function firstText(selectors) {
+    for (const selector of selectors) {
+      const text = document.querySelector(selector)?.textContent?.trim();
+      if (text) {
+        return text;
+      }
+    }
+    return '';
+  }
 
-  // Fallback dla nowszych motywów Jiry, gdzie dane bywają w atrybutach data-*
+  // 1. Klucz zgłoszenia - klasyczny widok zgłoszenia (#key-val) oraz panel szczegółów
+  // na tablicy "Active sprints" (data-issuekey na kontenerze, albo link w polu issuekey)
+  let issueKey =
+    document.querySelector('#key-val')?.textContent?.trim() ||
+    document.querySelector('[data-issuekey]')?.getAttribute('data-issuekey')?.trim() ||
+    document.querySelector('[data-issue-key]')?.getAttribute('data-issue-key')?.trim() ||
+    firstText(['[data-field-id="issuekey"] a', '[data-field-id="issuekey"]']);
+
+  // 2. Uniwersalny fallback: każdy link prowadzący do /browse/KLUCZ-123
+  // (działa zarówno w klasycznym widoku, jak i w panelu na tablicy)
   if (!issueKey) {
-    issueKey = document.querySelector('[data-issue-key]')?.getAttribute('data-issue-key')?.trim();
+    const browseLink = document.querySelector('a[href*="/browse/"]');
+    const match = browseLink?.getAttribute('href')?.match(/\/browse\/([A-Z][A-Z0-9]*-\d+)/);
+    issueKey = match?.[1];
   }
 
-  if (!summary) {
-    summary = document
-      .querySelector('[data-field-id="summary"], h1[id^="summary"]')
-      ?.textContent?.trim();
-  }
+  // 3. Tytuł/summary - klasyczny widok (#summary-val) oraz panel na tablicy (.ghx-summary)
+  const summary = firstText(['#summary-val', '[data-field-id="summary"]', '.ghx-summary', 'h1[id^="summary"]']);
 
   if (!issueKey || !summary) {
     return null;
   }
 
-  return { issueKey, summary };
+  return { issueKey: issueKey.trim(), summary: summary.trim() };
 }
 
 generateBtn.addEventListener('click', async () => {

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Branch Name Builder</title>
+  <style>
+    :root { color-scheme: dark; }
+
+    body {
+      margin: 0;
+      width: 320px;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #202020;
+      color: #f1f1f1;
+    }
+
+    .container {
+      padding: 16px;
+    }
+
+    h1 {
+      font-size: 15px;
+      margin: 0 0 14px;
+      font-weight: 600;
+    }
+
+    /* Przełącznik dwustanowy feature/bugfix - taki sam jak w appce desktopowej */
+    .type-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .type-toggle button {
+      flex: 1;
+      padding: 8px 0;
+      border: none;
+      border-radius: 4px;
+      background: #2d2d30;
+      color: #c8c8c8;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .type-toggle button.active-feature {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .type-toggle button.active-bugfix {
+      background: #d97706;
+      color: #fff;
+    }
+
+    #generateBtn {
+      width: 100%;
+      padding: 10px 0;
+      border: 1px solid #505054;
+      border-radius: 4px;
+      background: #2d2d30;
+      color: #f1f1f1;
+      font-size: 13px;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    #generateBtn:hover {
+      background: #3f3f46;
+    }
+
+    .status {
+      font-size: 12px;
+      line-height: 1.4;
+      word-break: break-all;
+      min-height: 32px;
+    }
+
+    .status.success { color: #98c379; }
+    .status.error { color: #e67c7c; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Branch Name Builder – Jira</h1>
+
+    <div class="type-toggle">
+      <button id="typeFeature" type="button">Feature</button>
+      <button id="typeBugfix" type="button">Bugfix</button>
+    </div>
+
+    <button id="generateBtn" type="button">Wygeneruj i skopiuj nazwę brancha</button>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <!-- CSP w MV3 wymaga lokalnego pliku, bez inline-skryptów -->
+  <script src="popup.js"></script>
+</body>
+</html>

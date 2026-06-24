@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Branch Name Builder – Jira",
+  "version": "1.0.0",
+  "description": "Generuje nazwę brancha Git na podstawie aktualnie otwartego zgłoszenia Jira (Server/Data Center) i kopiuje ją do schowka.",
+
+  "permissions": ["activeTab", "scripting"],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Branch Name Builder"
+  }
+}
